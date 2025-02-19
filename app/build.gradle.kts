@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.vrid_assignment"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.vrid_assignment"
@@ -66,4 +67,33 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //viewmodel&livedata
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    //coroutines
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+
+    //retrofit and gson
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.gson)
+
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
+
+    //Glide
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
+
+    //room
+    implementation (libs.androidx.room.runtime)
+    ksp(libs.room.compiler)
+    implementation (libs.androidx.room.ktx)
+
+    //implementation (libs.compose)
 }
