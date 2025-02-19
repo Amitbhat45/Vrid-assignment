@@ -19,9 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.vrid_assignment.Navigation.NavHostSetup
 import com.example.vrid_assignment.Retrofit.BlogService
 import com.example.vrid_assignment.Retrofit.RetrofitInstance
 import com.example.vrid_assignment.Room.BlogDatabase
+import com.example.vrid_assignment.UiLayer.MainScreen
 import com.example.vrid_assignment.Utilities.ResponseState
 import com.example.vrid_assignment.Viewmodel.BlogRepository
 import com.example.vrid_assignment.Viewmodel.BlogViewModel
@@ -39,56 +41,9 @@ class MainActivity : ComponentActivity() {
             val blogViewModel = BlogViewModel(repository)
 
             VridassignmentTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding),
-                        blogViewModel
-                    )
-                }
+                        NavHostSetup(blogViewModel = blogViewModel)
+
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier,viewModel: BlogViewModel) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-    val blogs by viewModel.blogs.collectAsState()
-
-
-    when (val state = blogs) {
-        is ResponseState.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-        }
-        is ResponseState.Success -> {
-            Log.d("BlogListScreen", "Received ${blogs} blogs from ViewModel")
-        }
-        is ResponseState.Error -> {
-            Text(text = "Error: ${state.message}")
-        }
-    }
-
-
-
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    VridassignmentTheme {
-       // Greeting("Android")
     }
 }
