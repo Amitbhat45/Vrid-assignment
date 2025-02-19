@@ -1,5 +1,7 @@
 package com.example.vrid_assignment.UiLayer
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,11 +39,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.vrid_assignment.Utilities.ResponseState
 import com.example.vrid_assignment.Viewmodel.BlogViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen(viewModel: BlogViewModel) {
+fun MainScreen(viewModel: BlogViewModel,navController: NavController) {
     Scaffold(
         containerColor = Color(0xFF000000),
         topBar = { Topappbar() }
@@ -82,7 +86,7 @@ fun MainScreen(viewModel: BlogViewModel) {
                 is ResponseState.Success -> {
                     state.data.forEach { blog ->
                         item {
-                            BlogCard(blog)
+                            BlogCard(blog,navController)
                         }
                     }
                 }

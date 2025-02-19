@@ -26,11 +26,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.vrid_assignment.Model.BlogPost
 import com.example.vrid_assignment.Room.BlogEntity
 import org.apache.commons.lang3.StringEscapeUtils
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -39,7 +42,9 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun BlogCard(blogDetails:BlogEntity){
+fun BlogCard(blogDetails:BlogEntity,
+             navController: NavController){
+    val encodedUrl = URLEncoder.encode(blogDetails.url, StandardCharsets.UTF_8.toString())
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -50,7 +55,7 @@ fun BlogCard(blogDetails:BlogEntity){
             .padding(10.dp)
             .height(380.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-        //onClick = {navController.navigate("details/${Animedetails.mal_id}")}
+        onClick = {navController.navigate("webview/${encodedUrl}")}
 
     ){
         Box(

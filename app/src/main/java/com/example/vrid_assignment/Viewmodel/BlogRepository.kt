@@ -23,7 +23,8 @@ class BlogRepository(private val blogService: BlogService, private val blogDao: 
                     title = blog.title.rendered,
                     excerpt = blog.excerpt.rendered,
                     date = blog.date,
-                    imgUrl = blog.jetpack_featured_media_url
+                    imgUrl = blog.jetpack_featured_media_url,
+                    url = blog.guid.rendered
                 )
             }
 

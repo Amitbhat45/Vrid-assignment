@@ -9,5 +9,6 @@ data class BlogEntity(
     val title:String,
     val excerpt:String,
     val date:String,
-    val imgUrl:String
+    val imgUrl:String,
+    val url: String
 )
