@@ -96,5 +96,8 @@ dependencies {
     ksp(libs.room.compiler)
     implementation (libs.androidx.room.ktx)
 
+    implementation (libs.commons.lang3)
+
+
     //implementation (libs.compose)
 }

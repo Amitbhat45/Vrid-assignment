@@ -2,8 +2,10 @@ package com.example.vrid_assignment.UiLayer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -20,6 +24,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,26 +41,36 @@ import com.example.vrid_assignment.Utilities.ResponseState
 import com.example.vrid_assignment.Viewmodel.BlogViewModel
 
 @Composable
-fun MainScreen(viewModel: BlogViewModel){
+fun MainScreen(viewModel: BlogViewModel) {
     Scaffold(
         containerColor = Color(0xFF000000),
-        topBar = { Topappbar()},
-        ) {
+        topBar = { Topappbar() }
+    ) {
         val blogs by viewModel.blogs.collectAsState()
-        
-        Column(modifier = Modifier
-            .padding(it)
-            .fillMaxSize()) {
-            Column (modifier = Modifier
+        val listState = rememberLazyListState()
+
+
+        LaunchedEffect(listState.firstVisibleItemIndex) {
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+            val dataSize = (blogs as? ResponseState.Success)?.data?.size ?: 0
+            if (lastVisibleItemIndex == dataSize - 1) {
+                viewModel.GetBlogs()
+            }
+        }
+
+        LazyColumn(
+            modifier = Modifier
                 .fillMaxSize()
-                //.padding(20.dp)
-                .height(300.dp)
-                .verticalScroll(rememberScrollState())) {
-                when (val state = blogs) {
-                    is ResponseState.Loading -> {
+                .padding(it),
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            when (val state = blogs) {
+                is ResponseState.Loading -> {
+                    item {
                         Box(
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                                 .padding(16.dp)
                         ) {
                             CircularProgressIndicator(
@@ -63,19 +78,29 @@ fun MainScreen(viewModel: BlogViewModel){
                             )
                         }
                     }
-                    is ResponseState.Success -> {
-                        state.data.forEach{ blog->
+                }
+                is ResponseState.Success -> {
+                    state.data.forEach { blog ->
+                        item {
                             BlogCard(blog)
                         }
                     }
-                    is ResponseState.Error -> {
-                        Text(text = "Error: ${state.message}")
+                }
+                is ResponseState.Error -> {
+                    item {
+                        Text(
+                            text = "Error: ${state.message}",
+                            color = Color.Red,
+                            modifier = Modifier.padding(16.dp)
+                        )
                     }
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun Topappbar() {

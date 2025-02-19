@@ -1,5 +1,7 @@
 package com.example.vrid_assignment.UiLayer
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +30,13 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.vrid_assignment.Model.BlogPost
 import com.example.vrid_assignment.Room.BlogEntity
+import org.apache.commons.lang3.StringEscapeUtils
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun BlogCard(blogDetails:BlogEntity){
@@ -75,7 +83,7 @@ fun BlogCard(blogDetails:BlogEntity){
                             .fillMaxSize()
                     ) {
                         Text(
-                            text = "${blogDetails.title}",
+                            text = "${removeHtmlTagsAndDecodeEntities(blogDetails.title)}",
                             color = Color(0xFFffffff),
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
@@ -84,14 +92,14 @@ fun BlogCard(blogDetails:BlogEntity){
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "${blogDetails.date}",
+                            text = "${formatDate(blogDetails.date)}",
                             color = Color(0xFFFF6B00),
                             style = TextStyle(fontSize = 14.sp),
                             fontWeight = FontWeight.W500
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "${blogDetails.excerpt}",
+                            text = "${removeHtmlTagsAndDecodeEntities(blogDetails.excerpt)}",
                             color = Color(0xFFCCCCCC),
                             maxLines = 4,
                             overflow = TextOverflow.Ellipsis,
@@ -105,4 +113,33 @@ fun BlogCard(blogDetails:BlogEntity){
         }
     }
 }
+
+
+
+fun removeHtmlTagsAndDecodeEntities(input: String): String {
+    // Remove HTML tags
+    val withoutHtmlTags = input.replace(Regex("<.*?>"), "")
+    // Decode HTML entities
+    return StringEscapeUtils.unescapeHtml4(withoutHtmlTags)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatDate(inputDate: String): String {
+    return try {
+        // Define the formatter for the input date format
+        val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
+
+        // Parse the input string to a LocalDateTime object
+        val parsedDate = LocalDateTime.parse(inputDate, inputFormatter)
+
+        // Define the formatter for the desired output format
+        val outputFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)
+
+        // Format the parsed date to the desired format
+        parsedDate.format(outputFormatter)
+    } catch (e: DateTimeParseException) {
+        "Invalid date format"
+    }
+}
+
 
